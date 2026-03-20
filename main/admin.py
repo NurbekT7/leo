@@ -1,21 +1,23 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from .models import User, UserImage, Action, Report
+from .models import User, UserMedia, Action, Report
 
 admin.site.unregister(Group)
 
 
-class UserImageInline(admin.TabularInline):
-    model = UserImage
+class UserMediaInline(admin.TabularInline):
+    model = UserMedia
     extra = 1
-    fields = ('image_id',)
-    verbose_name = "Image"
-    verbose_name_plural = "Images (Telegram File ID)"
+    fields = ('media_id', 'media_type')
+    verbose_name = "Media"
+    verbose_name_plural = "Media (Telegram File ID)"
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'telegram_id', 'username', 'name', 'age', 'gender', 'is_verified', 'is_blocked', 'created_at')
+
+    list_display_links = ('id', 'telegram_id')
 
     list_filter = ('gender', 'is_verified', 'is_blocked', 'age', 'created_at')
 
@@ -23,7 +25,7 @@ class UserAdmin(admin.ModelAdmin):
 
     list_editable = ('is_verified', 'is_blocked')
 
-    inlines = [UserImageInline]
+    inlines = [UserMediaInline]
 
     fieldsets = (
         ('Main information', {

@@ -1,6 +1,6 @@
 from django.db import models
 
-from main.constants import ACTION_TYPES, GENDER_TYPES
+from main.constants import ACTION_TYPES, GENDER_TYPES, MEDIA_TYPES
 
 
 class User(models.Model):
@@ -22,9 +22,10 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class UserImage(models.Model):
+class UserMedia(models.Model):
     user = models.ForeignKey(User, related_name='images', on_delete=models.SET_NULL, null=True)
-    image_id = models.CharField(max_length=256)
+    media_id = models.CharField(max_length=256)
+    media_type = models.CharField(max_length=1, choices=MEDIA_TYPES)
 
 
 class Action(models.Model):
@@ -41,4 +42,12 @@ class Report(models.Model):
     to_user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='complaints', null=True)
     text = models.TextField()
     image_id = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Notification(models.Model):
+    text = models.TextField()
+    image = models.ImageField()
+    to_user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='notifications', null=True)
+    to_all = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
